@@ -1,0 +1,22 @@
+# secrets and personal data: never commit
+keys.json
+nanowall-data/
+library/
+carousel/
+carousel.json
+carousel.tmp
+library.json
+taste.md
+draft.json
+learnings.jsonl
+runs/
+wallpapers/
+
+# build output
+__pycache__/
+build/
+dist/
+*.exe
+
+# local tooling
+.claude/

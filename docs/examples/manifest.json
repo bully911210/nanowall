@@ -1,0 +1,163 @@
+[
+  {
+    "file": "lock-01.jpg",
+    "mode": "LOCK",
+    "style": "apply a gentle cinematic colour grade and clean up background clutter",
+    "score": 10,
+    "faces_blurred": 8
+  },
+  {
+    "file": "wildcard-01.jpg",
+    "mode": "WILDCARD",
+    "style": "colour of this day",
+    "score": 6,
+    "faces_blurred": 8
+  },
+  {
+    "file": "light-01.jpg",
+    "mode": "LIGHT",
+    "style": "a realistic oil painting",
+    "score": 9,
+    "faces_blurred": 10
+  },
+  {
+    "file": "light-02.jpg",
+    "mode": "LIGHT",
+    "style": "a 1970s Kodachrome photograph",
+    "score": 10,
+    "faces_blurred": 10
+  },
+  {
+    "file": "lock-02.jpg",
+    "mode": "LOCK",
+    "style": "soften the light to late-afternoon golden light",
+    "score": 9,
+    "faces_blurred": 12
+  },
+  {
+    "file": "faced-01.jpg",
+    "mode": "FACED",
+    "style": "a graphic novel panel with clean inks",
+    "score": 8,
+    "faces_blurred": 15
+  },
+  {
+    "file": "lock-03.jpg",
+    "mode": "LOCK",
+    "style": "soften the light to late-afternoon golden light",
+    "score": 10,
+    "faces_blurred": 5
+  },
+  {
+    "file": "lock-04.jpg",
+    "mode": "LOCK",
+    "style": "crop and extend to a 16:9 widescreen frame, with the people in the right half and quiet scenery on the left",
+    "score": 10,
+    "faces_blurred": 5
+  },
+  {
+    "file": "light-03.jpg",
+    "mode": "LIGHT",
+    "style": "a detailed digital painting",
+    "score": 9,
+    "faces_blurred": 24
+  },
+  {
+    "file": "faced-02.jpg",
+    "mode": "FACED",
+    "style": "a graphic novel panel with clean inks",
+    "score": 8,
+    "faces_blurred": 8
+  },
+  {
+    "file": "lock-05.jpg",
+    "mode": "LOCK",
+    "style": "replace the background with a quiet, uncluttered version of the same kind of place",
+    "score": 10,
+    "faces_blurred": 14
+  },
+  {
+    "file": "faced-03.jpg",
+    "mode": "FACED",
+    "style": "a graphic novel panel with clean inks",
+    "score": 10,
+    "faces_blurred": 6
+  },
+  {
+    "file": "light-04.jpg",
+    "mode": "LIGHT",
+    "style": "a 1970s Kodachrome photograph",
+    "score": 10,
+    "faces_blurred": 6
+  },
+  {
+    "file": "lock-06.jpg",
+    "mode": "LOCK",
+    "style": "apply a gentle cinematic colour grade and clean up background clutter",
+    "score": 9,
+    "faces_blurred": 6
+  },
+  {
+    "file": "light-05.jpg",
+    "mode": "LIGHT",
+    "style": "a detailed digital painting",
+    "score": 9,
+    "faces_blurred": 15
+  },
+  {
+    "file": "lock-07.jpg",
+    "mode": "LOCK",
+    "style": "apply a gentle cinematic colour grade and clean up background clutter",
+    "score": 10,
+    "faces_blurred": 7
+  },
+  {
+    "file": "light-06.jpg",
+    "mode": "LIGHT",
+    "style": "a detailed digital painting",
+    "score": 9,
+    "faces_blurred": 6
+  },
+  {
+    "file": "lock-08.jpg",
+    "mode": "LOCK",
+    "style": "replace the background with a quiet, uncluttered version of the same kind of place",
+    "score": 10,
+    "faces_blurred": 6
+  },
+  {
+    "file": "light-07.jpg",
+    "mode": "LIGHT",
+    "style": "a detailed digital painting",
+    "score": 10,
+    "faces_blurred": 6
+  },
+  {
+    "file": "faced-04.jpg",
+    "mode": "FACED",
+    "style": "a graphic novel panel with clean inks",
+    "score": 6,
+    "faces_blurred": 8
+  },
+  {
+    "file": "light-08.jpg",
+    "mode": "LIGHT",
+    "style": "a realistic oil painting",
+    "score": 9,
+    "faces_blurred": 6
+  },
+  {
+    "file": "wildcard-02.jpg",
+    "mode": "WILDCARD",
+    "style": "colour of this day",
+    "score": 1,
+    "faces_blurred": 2
+  },
+  {
+    "file": "faced-05.jpg",
+    "mode": "FACED",
+    "style": "a graphic novel panel with clean inks",
+    "score": 9,
+    "faces_blurred": 10
+  }
+]

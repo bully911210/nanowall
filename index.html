@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>nanowall</title>
+<style>
+  :root{--bg:#0d0e11;--panel:#16181d;--line:#262a31;--ink:#ecebe7;--mute:#8d919a;--acc:#f5b94a;--bad:#ff7070;--ok:#6bd49a}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",sans-serif}
+  .wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:18px 60px}
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  h1{margin:0;font-size:20px} h1 b{color:var(--acc)}
+  .sub{color:var(--mute)}
+  section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+  h2{margin:0 0 12px;font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  h2 .n{color:var(--acc);font-size:14px}
+  button{background:#23262d;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit}
+  button:hover{border-color:var(--mute)} button.primary{background:var(--acc);color:#1b1405;border-color:var(--acc);font-weight:600}
+  button.big{font-size:16px;padding:12px 22px} button:disabled{opacity:.5;cursor:not-allowed}
+  input,select{background:#0b0c0f;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .grow{flex:1 1 200px}
+  #drop{border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+  #drop.over{border-color:var(--acc);background:#1d1a12}
+  #drop strong{display:block;font-size:17px;margin-bottom:4px}
+  .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:14px}
+  .pc{background:#0b0c0f;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+  .pc img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+  .pc .b{padding:10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+  .pc .t{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .theme{color:var(--acc);font-weight:600}
+  .score{font-variant-numeric:tabular-nums;color:var(--mute)}
+  .crit{color:var(--mute)}
+  .pc details summary{cursor:pointer;color:var(--mute);font-size:12px}
+  .pc .p{font-size:12px;color:var(--mute);margin:4px 0 8px}
+  .faces{display:flex;gap:6px;flex-wrap:wrap} .faces figure{margin:0;width:64px;text-align:center}
+  .faces img{width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid var(--line)} .faces img.weak{border-color:var(--bad)}
+  .faces figcaption{font-size:10px;color:var(--mute);line-height:1.2;margin-top:2px}
+  .risk{color:#e8a86a;font-size:12px}
+  .pending{color:var(--mute);font-style:italic}
+  .x{align-self:flex-end;padding:3px 9px;font-size:12px}
+  .bar{height:10px;background:#0b0c0f;border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#c98a1e,var(--acc));width:0;transition:width .4s}
+  #status{font-size:13px} .err{color:var(--bad)} .ok{color:var(--ok)}
+  .walls{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+  .wc{position:relative;border-radius:8px;overflow:hidden;border:2px solid transparent;background:#0b0c0f}
+  .wc.cur{border-color:var(--acc)}
+  .wc img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:pointer}
+  .wc .cap{position:absolute;inset:auto 0 0 0;padding:4px 8px;font-size:11px;background:linear-gradient(transparent,#000c);display:flex;justify-content:space-between;gap:6px}
+  .wc .del{position:absolute;top:4px;right:4px;padding:1px 7px;font-size:11px;opacity:0;transition:opacity .15s}
+  .wc:hover .del{opacity:1}
+  .empty{color:var(--mute)}
+  .keys{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chip{border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:12px;cursor:pointer;text-transform:none;letter-spacing:0}
+  .chip.on{border-color:var(--acc);color:var(--acc)}
+  @media(max-width:600px){.wrap{padding-inline:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>nano<b>wall</b></h1><span class="sub">your photos → expert review → a living 50-wallpaper carousel</span></header>
+
+  <section id="keySec">
+    <h2>Gemini key <span id="keyList" class="keys"></span></h2>
+    <div class="row">
+      <input id="kVal" class="grow" type="password" placeholder="Paste a Gemini API key">
+      <input id="kName" placeholder="label (optional)" style="width:160px">
+      <button id="bKey">Save key</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>1 · Your photos <span class="n" id="photoCount"></span></h2>
+    <div id="drop" tabindex="0" role="button">
+      <strong>Drop your favourite photos here</strong>
+      <span class="sub">or click to choose · family, places, pets, moments that matter · faces large and sharp · 3–20 works best</span>
+      <input id="file" type="file" accept="image/*" multiple hidden>
+    </div>
+    <p class="sub" style="margin:10px 0 0">Copies are stored locally with location data stripped. Each photo is sent to Google Gemini for review and rendering.</p>
+    <div class="photos" id="photos"></div>
+  </section>
+
+  <section>
+    <h2>2 · Carousel <span class="n" id="wallCount"></span></h2>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="row" style="margin:12px 0">
+      <button id="bStart" class="primary big">Start building</button>
+      <button id="bPrev">◀</button><button id="bNext">Next wallpaper ▶</button>
+      <label class="sub">rotate every <select id="interval">
+        <option value="5">5 min</option><option value="15">15 min</option><option value="30">30 min</option>
+        <option value="60">1 hour</option><option value="240">4 hours</option><option value="1440">daily</option></select></label>
+      <span id="status" class="grow"></span>
+    </div>
+    <div class="walls" id="walls"><div class="empty">Wallpapers appear here as they land, and each goes straight onto your desktop.</div></div>
+  </section>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids); return n; };
+let S = null, uploading = 0;
+
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? {cache:"no-store"} : {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const j = await r.json().catch(() => ({error: r.statusText}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+const flash = (msg, cls = "") => { $("status").className = "grow " + cls; $("status").textContent = msg; };
+
+function renderKeys() {
+  const k = S.keys;
+  $("keySec").style.borderColor = k.keys.length ? "" : "var(--acc)";
+  $("keyList").replaceChildren(...k.keys.map(({name, hint}) => {
+    const c = el("span", {className: "chip" + (name === k.active ? " on" : ""), textContent: `${name} ${hint}`, title: "click to use · right-click to remove"});
+    c.onclick = () => api("/api/keys/use", {name}).then(refresh);
+    c.oncontextmenu = e => { e.preventDefault(); if (confirm(`Remove key "${name}"?`)) api("/api/keys/remove", {name}).then(refresh); };
+    return c;
+  }));
+}
+
+function renderPhotos() {
+  $("photoCount").textContent = S.photos.length ? `${S.photos.length} photos · ${S.identities.length} people/pets` : "";
+  const nameOf = crop => (S.identities.find(i => i.members.includes(crop)) || {}).name;
+  $("photos").replaceChildren(...S.photos.map(p => {
+    const d = p.detect, b = el("div", {className: "b"});
+    const del = el("button", {className: "x", textContent: "remove", onclick: () => confirm(`Remove ${p.name}?`) && api("/api/photos/remove", {id: p.id}).then(refresh)});
+    if (!d) { b.append(el("div", {className: "pending", textContent: "Indexing faces…"}), del); }
+    else {
+      const faces = el("div", {className: "faces"}, ...d.subjects.map(sub => el("figure", {title: `face quality ${sub.quality}/10`},
+        el("img", {src: "/face/" + sub.crop + "?v=" + (d.version || 1), loading: "lazy", className: sub.quality < 5 ? "weak" : ""}),
+        el("figcaption", {textContent: nameOf(sub.crop) || sub.label}))));
+      const made = Object.entries(p.made).filter(([, n]) => n).map(([m, n]) => `${n} ${m}`).join(" · ") || "nothing yet";
+      b.append(el("div", {className: "t"}, el("span", {className: "theme", textContent: d.theme}), el("span", {className: "score", textContent: `${d.score}/10`})),
+        faces, el("div", {textContent: d.why}), el("div", {className: "crit", textContent: d.critique}));
+      if (d.risks) b.append(el("div", {className: "risk", textContent: "⚠ " + d.risks}));
+      if (p.lock_fails >= 4) b.append(el("div", {className: "risk", textContent: "⚠ Couldn't lock these faces. Try a photo where faces are larger and sharper."}));
+      b.append(el("div", {className: "crit", textContent: `${p.locks.length} locked · ${made}`}), del);
+    }
+    return el("div", {className: "pc"}, el("img", {src: "/photo/" + p.id, alt: p.name, loading: "lazy"}), b);
+  }));
+}
+
+function renderWalls() {
+  const n = S.carousel.length;
+  $("wallCount").textContent = `${n} / ${S.cap}`;
+  $("bar").style.width = (100 * n / S.cap) + "%";
+  if (!n) return;
+  const cur = S.carousel[S.cursor]?.file;
+  $("walls").replaceChildren(...S.carousel.slice().reverse().map(w => {
+    const img = el("img", {src: "/wall/" + w.file, loading: "lazy", title: w.prompt, onclick: () => api("/api/show", {file: w.file}).then(refresh)});
+    const del = el("button", {className: "del", textContent: "✕", title: "remove (a replacement will be made)", onclick: () => api("/api/wall/remove", {file: w.file}).then(refresh)});
+    return el("div", {className: "wc" + (w.file === cur ? " cur" : "")}, img,
+      el("div", {className: "cap"}, el("span", {textContent: `${w.mode || ""} · ${w.style}`}), el("span", {textContent: w.mode === "WILDCARD" ? "" : (w.score ? "face " + w.score + "/10" : "")})), del);
+  }));
+}
+
+let lastSig = "";
+async function refresh() {
+  S = await api("/api/state");
+  const sig = JSON.stringify([S.photos, S.identities, S.carousel.length, S.cursor, S.keys]);
+  if (sig !== lastSig) { lastSig = sig; renderKeys(); renderPhotos(); renderWalls(); }
+  if (document.activeElement !== $("interval")) $("interval").value = String(S.interval_min);
+  const full = S.carousel.length >= S.cap;
+  $("bStart").textContent = S.running ? "Pause" : full ? "Carousel full" : S.carousel.length ? "Resume building" : "Start building";
+  $("bStart").disabled = !S.running && (full || !S.photos.length);
+  if (uploading) flash(`Adding ${uploading} photo(s)…`);
+  else if (S.last_error) flash(S.last_error, "err");
+  else flash(S.status, S.running ? "ok" : "");
+}
+
+async function addFiles(files) {
+  const imgs = [...files].filter(f => f.type.startsWith("image/"));
+  uploading = imgs.length;
+  for (const f of imgs) {
+    try {
+      const data = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(",")[1]); r.onerror = rej; r.readAsDataURL(f); });
+      await api("/api/photos/add", {name: f.name, data});
+    } catch (e) { flash(e.message, "err"); }
+    uploading--; await refresh();
+  }
+  if (S.photos.length && !S.running && S.keys.keys.length) await api("/api/start", {}).catch(e => flash(e.message, "err"));
+  refresh();
+}
+
+const drop = $("drop");
+drop.onclick = () => $("file").click();
+drop.onkeydown = e => (e.key === "Enter" || e.key === " ") && $("file").click();
+$("file").onchange = e => addFiles(e.target.files);
+["dragenter", "dragover"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+
+$("bKey").onclick = () => api("/api/keys/add", {name: $("kName").value, key: $("kVal").value})
+  .then(() => { $("kVal").value = $("kName").value = ""; return refresh(); }).catch(e => flash(e.message, "err"));
+$("bStart").onclick = () => api(S.running ? "/api/stop" : "/api/start", {}).then(refresh).catch(e => flash(e.message, "err"));
+$("bNext").onclick = () => api("/api/next", {step: 1}).then(refresh).catch(e => flash(e.message, "err"));
+$("bPrev").onclick = () => api("/api/next", {step: -1}).then(refresh).catch(e => flash(e.message, "err"));
+$("interval").onchange = () => api("/api/interval", {minutes: +$("interval").value}).then(refresh);
+
+refresh().catch(e => flash(e.message, "err"));
+setInterval(() => refresh().catch(() => {}), 3000);
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+pillow>=10.0
+numpy>=1.26
+opencv-python>=4.8
+pyinstaller>=6.0   # only needed to build nanowall.exe
